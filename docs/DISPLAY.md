@@ -186,7 +186,7 @@ print(embedding['data'][0]['embedding'])
 ```python
 import os
 
-os.environ["OPENAI_API_BASE"] = "http://192.168.0.xx:80/v1"
+os.environ["OPENAI_API_BASE"] = "http://localhost:8700/v1"
 os.environ["OPENAI_API_KEY"] = "xxx"
 
 from langchain.chat_models import ChatOpenAI

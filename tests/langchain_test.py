@@ -2,12 +2,14 @@ from langchain.chat_models import ChatOpenAI
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.schema import HumanMessage
 
-text = "你好"
+text = "hello"
 messages = [HumanMessage(content=text)]
+print(messages)
+chat = ChatOpenAI(openai_api_base="http://localhost:8700/v1",openai_api_key="sk-xxx")
+# llm = ChatOpenAI(openai_api_key="yxc", openai_api_base="http://localhost:8700/v1")
+print(chat(messages))
 
-llm = ChatOpenAI(openai_api_key="xxx", openai_api_base="http://192.168.20.59:7891/v1")
+# # print(llm(messages))
 
-print(llm(messages))
-
-embedding = OpenAIEmbeddings(openai_api_key="xxx", openai_api_base="http://192.168.20.59:7891/v1")
-print(embedding.embed_documents(["你好"]))
+# embedding = OpenAIEmbeddings(openai_api_key="xxx", openai_api_base="http://localhost:8700/v1")
+# print(embedding.embed_documents(["你好"]))

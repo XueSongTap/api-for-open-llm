@@ -181,7 +181,7 @@ class QwenTemplate(BaseTemplate):
         if 0 <= i < j:  # If the text has `Action` and `Action input`,
             if k < j:  # but does not contain `Observation`,
                 # then it is likely that `Observation` is omitted by the LLM,
-                # because the output text may have discarded the stop word.
+                # because the output text may have discarded the  word.
                 output = output.rstrip() + "\nObservation:"  # Add it back.
             k = output.rfind("\nObservation:")
             func_name = output[i + len("\nAction:"): j].strip()

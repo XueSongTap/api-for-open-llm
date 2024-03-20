@@ -1,0 +1,40 @@
+version: '3.10'
+
+services:
+  vllmapiserver:
+    image: docker.dev.deepleaper.cn/llm-api:vllm
+    shm_size: 32G                            # (可选项)多卡部署时必须配置.建议配置至少1G,不然可能由于共享内存不足出现问题
+    container_name: yxc.qwen.vllm.server.4   # 自定义容器名
+    command: python api/server.py > server.log    # 日志位置务自定义
+    ulimits:
+      stack: 67108864
+      memlock: -1
+    environment:
+      - PORT=8000
+      - MODEL_NAME=qwen                        # 模型名,必须在服务支持的模型名列表中
+      - MODEL_PATH=models/qwen/Qwen-7B-Chat    # 模型参数路径,由于volumes中已经进行路径挂载,故这里的路径切记以models/开头
+      # - GPU_MEMORY_UTILIZATION=0.8           # (可选项)服务对GPU显存的占用率,默认值0.9
+      - TENSOR_PARALLEL_SIZE=2               # (可选项)几卡部署,默认值是1
+    volumes:
+      - /data/usr/xcye/api-for-open-llm:/workspace
+      # model path need to be specified if not in pwd
+      - /mnt/ecs/img-gpu02/models:/workspace/models
+    env_file:
+      - .env.vllm.example                      # 这是默认配置，不用做任何修改
+    ports:                                     # 87xx为外放接口，使用前请命令行运行netstat -tulnp|grep 87xx检查端口是否被占用,如果被占用,换一个没被占用的
+      - "8700:8000"
+    restart: always
+    networks:
+      - vllmapinet
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0','1']                # 如果使用多卡部署,请注释掉这行
+              capabilities: [gpu]
+
+networks:
+  vllmapinet:
+    driver: bridge
+    name: vllmapinet
